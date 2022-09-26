@@ -1,20 +1,18 @@
 import ai.rapids.cudf.ColumnVector;
 import ai.rapids.cudf.DType;
 import ai.rapids.cudf.Table;
-import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class Main {
 
   public static void main(String args[]) throws InterruptedException {
+//    doStabilityTest(60_000_000, 2, 10);
     doStabilityTest(450_000_000, 4, 10);
   }
 
-  void doStabilityTest(int n, int numThreads, int maxAttempt) throws InterruptedException {
+  static void doStabilityTest(int n, int numThreads, int maxAttempt) throws InterruptedException {
     // This test aims to reproduce the following Spark query, which produces inconsistent results between runs
     // spark.range(1000000000L).selectExpr("CAST(id as STRING) as str_id").filter("regexp_like(str_id, '(.|\n)*1(.|\n)0(.|\n)*')").count()
 
@@ -48,26 +46,24 @@ public class Main {
           }
 
         });
-        System.err.println("starting thread");
         threads[j].start();
       }
 
       for (Thread t : threads) {
-        System.err.println("waiting for thread");
         t.join();
-        System.err.println("thread completed");
       }
 
       csvResults[attempt] = Arrays.stream(result)
               .mapToObj(String::valueOf)
               .collect(Collectors.joining(","));
-
-      System.err.println("Results: " + csvResults[attempt]);
     }
 
     // check that the results from each run are the same
     for (int attempt = 0; attempt< maxAttempt; attempt++) {
-      assertEquals(csvResults[0], csvResults[attempt]);
+      System.out.println(csvResults[attempt]);
+      if (!csvResults[0].equals(csvResults[attempt])) {
+        throw new IllegalStateException();
+      }
     }
 
   }

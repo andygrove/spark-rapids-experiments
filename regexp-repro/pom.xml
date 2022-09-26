@@ -35,6 +35,7 @@
             <groupId>com.nvidia</groupId>
             <artifactId>spark-rapids-jni</artifactId>
             <version>22.10.0-SNAPSHOT</version>
+            <classifier>cuda11</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
