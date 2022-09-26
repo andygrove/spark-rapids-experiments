@@ -20,6 +20,7 @@ public class Main {
     //   .filter("regexp_like(str_id, '(.|\n)*1(.|\n)0(.|\n)*')")
     //   .count()
 
+    // create the input data once in host memory
     long[][] array = new long[numThreads][];
     for (int threadNo=0; threadNo<numThreads; threadNo++) {
       int chunk_size = n / numThreads;
@@ -31,7 +32,6 @@ public class Main {
     }
 
     String csvResults[] = new String[maxAttempt];
-
     for (int attempt = 0; attempt< maxAttempt; attempt++) {
       System.err.println("attempt " + attempt + " of " + maxAttempt);
 
@@ -56,6 +56,11 @@ public class Main {
           }
 
         });
+
+      }
+
+      // start the threads
+      for (int j = 0; j < numThreads; j++) {
         threads[j].start();
       }
 
