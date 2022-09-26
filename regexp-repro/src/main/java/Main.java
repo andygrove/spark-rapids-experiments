@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class Main {
 
   public static void main(String args[]) throws InterruptedException {
-    doStabilityTest(166_666_667, 2, 10);
+    doStabilityTest(2 * 166_666_667, 2, 10);
   }
 
   static void doStabilityTest(int n, int numThreads, int maxAttempt) throws InterruptedException {
@@ -20,6 +20,15 @@ public class Main {
     //   .filter("regexp_like(str_id, '(.|\n)*1(.|\n)0(.|\n)*')")
     //   .count()
 
+    long[][] array = new long[numThreads][];
+    for (int threadNo=0; threadNo<numThreads; threadNo++) {
+      int chunk_size = n / numThreads;
+      array[threadNo] = new long[chunk_size];
+      long[] x = array[threadNo];
+      for (int i = 0; i < chunk_size; i++) {
+        x[i] = (long) chunk_size * threadNo + i;
+      }
+    }
 
     String csvResults[] = new String[maxAttempt];
 
@@ -32,15 +41,9 @@ public class Main {
         int threadNo = j;
         threads[j] = new Thread(() -> {
 
-          int chunk_size = n/numThreads;
-          long array[] = new long[chunk_size];
-          for (int i = 0; i < chunk_size; i++) {
-            array[i] = chunk_size * threadNo + i;
-          }
-
           // cast longs to string then release the longs vector
           ColumnVector castTo;
-          try (ColumnVector longs = ColumnVector.fromLongs(array)) {
+          try (ColumnVector longs = ColumnVector.fromLongs(array[threadNo])) {
                castTo = longs.castTo(DType.STRING);
           }
 
