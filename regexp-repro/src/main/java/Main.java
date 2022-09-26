@@ -38,10 +38,15 @@ public class Main {
             array[i] = chunk_size * threadNo + i;
           }
 
-          try (ColumnVector longs = ColumnVector.fromLongs(array);
-               ColumnVector castTo = longs.castTo(DType.STRING);
-               ColumnVector matchesRe = castTo.matchesRe("(.|\\n)*1(.|\\n)0(.|\\n)*");
-               Table t = new Table(longs);
+          // cast longs to string then release the longs vector
+          ColumnVector castTo;
+          try (ColumnVector longs = ColumnVector.fromLongs(array)) {
+               castTo = longs.castTo(DType.STRING);
+          }
+
+          // matchesRe and filter
+          try (ColumnVector matchesRe = castTo.matchesRe("(.|\\n)*1(.|\\n)0(.|\\n)*");
+               Table t = new Table(castTo);
                Table t2 = t.filter(matchesRe)) {
             result[threadNo] = t2.getRowCount();
             System.err.println("thread " + threadNo + " count: " + t2.getRowCount());
