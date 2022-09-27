@@ -51,28 +51,33 @@ public class Main {
                castTo = longs.castTo(DType.STRING);
           }
 
+          // Java (CPU) matchesRe
+          int cpuCount = 0;
+          Pattern p = Pattern.compile(REGEX_PATTERN);
+          HostColumnVector hv = castTo.copyToHost();
+          for (int i = 0; i < hv.getRowCount(); i++) {
+            if (p.matcher(hv.getJavaString(i)).matches()) {
+              cpuCount += 1;
+            }
+          }
+          hv.close();
+
+//          int nn = 10;
+//          for (int i = 0; i< nn; i++) {
+//            System.err.println("match["+ i + "] " + hv.getJavaString(i));
+//          }
+//          for (int i = (int)t2.getRowCount() - nn -1; i<t2.getRowCount(); i++) {
+//            System.err.println("match["+ i + "] " + hv.getJavaString(i));
+//          }
+
+
           // matchesRe and filter
           try (ColumnVector matchesRe = castTo.containsRe(REGEX_PATTERN);
                Table t = new Table(castTo);
                Table t2 = t.filter(matchesRe)) {
             result[threadNo] = t2.getRowCount();
-            System.err.println("thread " + threadNo + " count: " + t2.getRowCount());
+            System.err.println("thread " + threadNo + " gpuCount: " + t2.getRowCount() + " cpuCount: " + cpuCount);
 
-//            Pattern p = Pattern.compile(REGEX_PATTERN);
-//            HostColumnVector hv = t2.getColumn(0).copyToHost();
-//            for (int i = 0; i< t2.getRowCount(); i++) {
-//              p.matcher(hv.getJavaString(i)).matches()
-//
-//            }
-
-//            int nn = 10;
-//            for (int i = 0; i< nn; i++) {
-//              System.err.println("match["+ i + "] " + hv.getJavaString(i));
-//            }
-//            for (int i = (int)t2.getRowCount() - nn -1; i<t2.getRowCount(); i++) {
-//              System.err.println("match["+ i + "] " + hv.getJavaString(i));
-//            }
-//            hv.close();
 
           }
 
