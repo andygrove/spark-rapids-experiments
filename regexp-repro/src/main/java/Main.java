@@ -1,5 +1,6 @@
 import ai.rapids.cudf.ColumnVector;
 import ai.rapids.cudf.DType;
+import ai.rapids.cudf.HostColumnVector;
 import ai.rapids.cudf.Table;
 
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public class Main {
     // inconsistent results between runs:
     //
     // spark.range(1000000000L)
-    // .selectExpr("CAST(id as STRING) as str_id")
+    //   .selectExpr("CAST(id as STRING) as str_id")
     //   .filter("regexp_like(str_id, '(.|\n)*1(.|\n)0(.|\n)*')")
     //   .count()
 
@@ -53,6 +54,18 @@ public class Main {
                Table t2 = t.filter(matchesRe)) {
             result[threadNo] = t2.getRowCount();
             System.err.println("thread " + threadNo + " count: " + t2.getRowCount());
+
+            // show first and last n matches
+            HostColumnVector hv = t2.getColumn(0).copyToHost();
+            int nn = 10;
+            for (int i = 0; i< nn; i++) {
+              System.err.println("match["+ i + "] " + hv.getJavaString(i));
+            }
+            for (int i = (int)t2.getRowCount() - nn -1; i<t2.getRowCount(); i++) {
+              System.err.println("match["+ i + "] " + hv.getJavaString(i));
+            }
+            hv.close();
+
           }
 
         });
