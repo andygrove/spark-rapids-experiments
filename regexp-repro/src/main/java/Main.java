@@ -4,9 +4,12 @@ import ai.rapids.cudf.HostColumnVector;
 import ai.rapids.cudf.Table;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Main {
+
+  static final String REGEX_PATTERN = "(.|\\n)*1(.|\\n)0(.|\\n)*";
 
   public static void main(String args[]) throws InterruptedException {
     doStabilityTest(2 * 166_666_667, 2, 10);
@@ -49,22 +52,27 @@ public class Main {
           }
 
           // matchesRe and filter
-          try (ColumnVector matchesRe = castTo.matchesRe("(.|\\n)*1(.|\\n)0(.|\\n)*");
+          try (ColumnVector matchesRe = castTo.containsRe(REGEX_PATTERN);
                Table t = new Table(castTo);
                Table t2 = t.filter(matchesRe)) {
             result[threadNo] = t2.getRowCount();
             System.err.println("thread " + threadNo + " count: " + t2.getRowCount());
 
-            // show first and last n matches
-            HostColumnVector hv = t2.getColumn(0).copyToHost();
-            int nn = 10;
-            for (int i = 0; i< nn; i++) {
-              System.err.println("match["+ i + "] " + hv.getJavaString(i));
-            }
-            for (int i = (int)t2.getRowCount() - nn -1; i<t2.getRowCount(); i++) {
-              System.err.println("match["+ i + "] " + hv.getJavaString(i));
-            }
-            hv.close();
+//            Pattern p = Pattern.compile(REGEX_PATTERN);
+//            HostColumnVector hv = t2.getColumn(0).copyToHost();
+//            for (int i = 0; i< t2.getRowCount(); i++) {
+//              p.matcher(hv.getJavaString(i)).matches()
+//
+//            }
+
+//            int nn = 10;
+//            for (int i = 0; i< nn; i++) {
+//              System.err.println("match["+ i + "] " + hv.getJavaString(i));
+//            }
+//            for (int i = (int)t2.getRowCount() - nn -1; i<t2.getRowCount(); i++) {
+//              System.err.println("match["+ i + "] " + hv.getJavaString(i));
+//            }
+//            hv.close();
 
           }
 
