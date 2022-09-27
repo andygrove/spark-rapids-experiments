@@ -12,7 +12,7 @@ public class Main {
   static final String REGEX_PATTERN = "(.|\\n)*1(.|\\n)0(.|\\n)*";
 
   public static void main(String args[]) throws InterruptedException {
-    doStabilityTest(2 * 166_666_667, 2, 10);
+    doStabilityTest(166_666_667/16, 2, 10);
   }
 
   static void doStabilityTest(int n, int numThreads, int maxAttempt) throws InterruptedException {
