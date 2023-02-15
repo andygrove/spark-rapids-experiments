@@ -107,7 +107,7 @@ public class Main {
 
   private static boolean[] gpuContains(String pattern, String[] inputs) {
     ColumnVector cv = ColumnVector.fromStrings(inputs);
-    cv = cv.rstrip();
+//    cv = cv.rstrip();
 //    cv = cv.stringReplace(Scalar.fromString("\u2028"), Scalar.fromString("\n"));
 //    cv = cv.stringReplace(Scalar.fromString("\u2029"), Scalar.fromString("\n"));
 //    cv = cv.stringReplace(Scalar.fromString("\r\n"), Scalar.fromString("\n"));
