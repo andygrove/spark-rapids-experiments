@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <cuda.version>cuda11</cuda.version>
-        <spark-rapids-jni.version>23.04.0-SNAPSHOT</spark-rapids-jni.version>
+        <spark-rapids-jni.version>23.06.0-SNAPSHOT</spark-rapids-jni.version>
     </properties>
 
     <build>
@@ -34,11 +34,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.nvidia</groupId>
-            <artifactId>spark-rapids-jni</artifactId>
-            <version>${spark-rapids-jni.version}</version>
-            <classifier>${cuda.version}</classifier>
+            <groupId>ai.rapids</groupId>
+            <artifactId>cudf</artifactId>
+            <version>23.04.0</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.nvidia</groupId>-->
+<!--            <artifactId>spark-rapids-jni</artifactId>-->
+<!--            <version>${spark-rapids-jni.version}</version>-->
+<!--            <classifier>${cuda.version}</classifier>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
