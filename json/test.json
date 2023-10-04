@@ -1,0 +1,4 @@
+
+{"Zipcode":704,"ZipCodeType":"STANDARD","City":"PARC PARQUE","State":"PR"}
+{"Zipcode":[706,123,4646],"ZipCodeType":"SPECIAL","City":"San Jose","State":[{"Zipcode":706,"ZipCodeType":"SPECIAL","City":"San Jose","State":"CA"}]}
+{"Zipcode":706,"ZipCodeType":"SPECIAL","City":"San Jose","State":"CA"}
